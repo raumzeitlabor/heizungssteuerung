@@ -99,10 +99,10 @@ const double a_s[8] = {0.386211, 0.413819, 0.396628, 0.407052, 0.400403, 0.39472
     
 
     channel++;
-    if (channel > 7) {
+    if (channel > 3) {
 		channel = 0;
 		
-		output = sum / 8;
+		output = sum / 4;
 		sprintf( puffer, "%.2f", output );
 		usart0_puts( puffer );
 		usart0_puts("\n");

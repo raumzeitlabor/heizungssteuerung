@@ -13,6 +13,9 @@ Hardware: HD44780 compatible LCD text display
 #include <util/delay.h> 
 #include <avr/interrupt.h>
 #include "usart.h"
+#include "onewire.h"
+#include "ds18x20.h"
+
 #define BAUD 9600                    //definiert die Bautrate für den USART.
 #define USART0_RX_BUFFER_SIZE 32      //definiert die größe des Empfangsbuffers. Die Buffergröße kann 2, 4, 8, 16, 32, 64, 128 oder 256 Byte groß sein.
 #define USART0_TX_BUFFER_SIZE 32      //definiert die größe des Sendebuffers. Die Buffergröße kann 2, 4, 8, 16, 32, 64, 128 oder 256 Byte groß sein.
@@ -26,93 +29,54 @@ void usart0_puts (const char *s)
     }
 }
 
-/* ADC initialisieren */
-void ADC_Init(void) {
- 
-  uint16_t result;
- 
-//  ADMUX = (0<<REFS1) | (1<<REFS0);      // AVcc als Referenz benutzen
-  ADMUX = (1<<REFS0) | (1<<REFS0);      // interne Referenzspannung nutzen
-  // Bit ADFR ("free running") in ADCSRA steht beim Einschalten
-  // schon auf 0, also single conversion
-  ADCSRA = (1<<ADPS2) |(1<<ADPS1) | (1<<ADPS0);     // Frequenzvorteiler
-  ADCSRA |= (1<<ADEN);                  // ADC aktivieren
- 
-  /* nach Aktivieren des ADC wird ein "Dummy-Readout" empfohlen, man liest
-     also einen Wert und verwirft diesen, um den ADC "warmlaufen zu lassen" */
- 
-  ADCSRA |= (1<<ADSC);                  // eine ADC-Wandlung 
-  while (ADCSRA & (1<<ADSC) ) {}        // auf Abschluss der Konvertierung warten
-  /* ADCW muss einmal gelesen werden, sonst wird Ergebnis der nächsten
-     Wandlung nicht übernommen. */
-  result = ADCW;
-}
- 
-/* ADC Einzelmessung */
-uint16_t ADC_Read( uint8_t channel )
-{
-  // Kanal waehlen, ohne andere Bits zu beeinflußen
-  ADMUX = (ADMUX & ~(0x1F)) | (channel & 0x1F);
-  ADCSRA |= (1<<ADSC);            // eine Wandlung "single conversion"
-  while (ADCSRA & (1<<ADSC) ) {}  // auf Abschluss der Konvertierung warten
-  return ADCW;                    // ADC auslesen und zurückgeben
-}
- 
-/* ADC Mehrfachmessung mit Mittelwertbbildung */
-uint16_t ADC_Read_Avg( uint8_t channel, uint8_t average )
-{
-  uint32_t result = 0;
- 
-  for (uint8_t i = 0; i < average; ++i )
-    result += ADC_Read( channel );
- 
-  return (uint16_t)( result / average );
-}
-
 int main(void)
 {
-
+	uint8_t sensor_id[OW_ROMCODE_SIZE];
+	uint8_t diff;
+	int16_t decicelsius;
+	uint8_t puffer[20];
+	double output;
+	
     usart0_init();
 		
 	/* enable LED so that the user knows the controller is active */
     DDRC = (1 << PC7);
     PORTC = (1 << PC7);
-    
+
 	sei();
-	
+
 	usart0_puts("\r\nBooting up...\r\n");
-	
-uint16_t adcval;
-double sum;
-  ADC_Init();
- uint8_t puffer[20];
-const double a_s[8] = {0.386211, 0.413819, 0.396628, 0.407052, 0.400403, 0.394722, 0.392526, 0.396574};
-	const double b_s[8] = {-166.933, -179.402, -171.071, -176.103, -173.983, -171.072, -170.102, -169.712};
-   double output = 0;
-   uint8_t channel = 0;
-  while( 1 ) {
-    adcval = ADC_Read_Avg(channel, 5);  // Kanal 2, Mittelwert aus 4 Messungen
-    output = adcval * a_s[channel];
-    output += b_s[channel];
-    sum += output;
 
+#ifndef OW_ONE_BUS
+	ow_set_bus(&PINB,&PORTB,&DDRB,PB0);
+#endif
+    ow_reset();
+    DS18X20_find_sensor( &diff, &sensor_id[0] );
     
+    if( diff == OW_PRESENCE_ERR ) {
+		usart0_puts( "Boot Error: No Sensor found\r\n" );
+		while ( 1 ) { asm volatile ("nop"); };
+	}
+	
+	if( diff == OW_DATA_ERR ) {
+		usart0_puts( "Boot Error: Bus Error\r\n" );
+		while ( 1 ) { asm volatile ("nop"); };
+	}
 
-    channel++;
-    if (channel > 3) {
-		channel = 0;
-		
-		output = sum / 4;
-		sprintf( puffer, "%.2f", output );
-		usart0_puts( puffer );
-		usart0_puts("\n");
-		
-		sum = 0;
-		
+	while ( 1 ) {
+		if ( DS18X20_start_meas( DS18X20_POWER_EXTERN, 
+				&sensor_id[0] ) == DS18X20_OK ) {
+			_delay_ms( DS18B20_TCONV_12BIT );
+			if ( DS18X20_read_decicelsius( &sensor_id[0], &decicelsius) 
+				     == DS18X20_OK ) {
+				output = decicelsius / 10.0;
+				sprintf( puffer, "%.2f", output );
+				usart0_puts( puffer );
+				usart0_puts("\n");
+			}
+		}
 		_delay_ms(60000);
 	}
-  }
-
 }
 
 

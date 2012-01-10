@@ -43,7 +43,7 @@ TARGET = main
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c usart.c numtostr.c
+SRC = $(TARGET).c usart.c numtostr.c crc8.c onewire.c ds18x20.c
 
 
 # List Assembler source files here.

@@ -16,6 +16,10 @@ Hardware: HD44780 compatible LCD text display
 #include "onewire.h"
 #include "ds18x20.h"
 
+
+
+#include "uart_hex.c"
+
 #define BAUD 9600                    //definiert die Bautrate für den USART.
 #define USART0_RX_BUFFER_SIZE 32      //definiert die größe des Empfangsbuffers. Die Buffergröße kann 2, 4, 8, 16, 32, 64, 128 oder 256 Byte groß sein.
 #define USART0_TX_BUFFER_SIZE 32      //definiert die größe des Sendebuffers. Die Buffergröße kann 2, 4, 8, 16, 32, 64, 128 oder 256 Byte groß sein.
@@ -29,13 +33,36 @@ void usart0_puts (const char *s)
     }
 }
 
-int main(void)
+uint8_t search_and_display(uint8_t diff)
 {
 	uint8_t sensor_id[OW_ROMCODE_SIZE];
-	uint8_t diff;
 	int16_t decicelsius;
 	uint8_t puffer[20];
 	double output;
+#ifndef OW_ONE_BUS
+	ow_set_bus(&PINB,&PORTB,&DDRB,PB0);
+#endif
+    ow_reset();
+    DS18X20_find_sensor( &diff, &sensor_id[0] );
+    
+    if( diff == OW_PRESENCE_ERR || diff == OW_DATA_ERR ) {
+			return diff;
+		}
+		if ( DS18X20_start_meas( DS18X20_POWER_EXTERN, 
+				&sensor_id[0] ) == DS18X20_OK ) {
+			_delay_ms( DS18B20_TCONV_12BIT );
+			if ( DS18X20_read_decicelsius( &sensor_id[0], &decicelsius) 
+				     == DS18X20_OK ) {
+				output = decicelsius / 10.0;
+				sprintf( puffer, " %.2f ", output );
+				uart_put_hex(sensor_id, OW_ROMCODE_SIZE);
+				usart0_puts( puffer );
+			}
+		}
+	return diff;
+}
+
+int main(void) {
 	
     usart0_init();
 		
@@ -45,38 +72,19 @@ int main(void)
 
 	sei();
 
-	usart0_puts("\r\nBooting up...\r\n");
-
-#ifndef OW_ONE_BUS
-	ow_set_bus(&PINB,&PORTB,&DDRB,PB0);
-#endif
-    ow_reset();
-    DS18X20_find_sensor( &diff, &sensor_id[0] );
-    
-    if( diff == OW_PRESENCE_ERR ) {
-		usart0_puts( "Boot Error: No Sensor found\r\n" );
-		while ( 1 ) { asm volatile ("nop"); };
-	}
-	
-	if( diff == OW_DATA_ERR ) {
-		usart0_puts( "Boot Error: Bus Error\r\n" );
-		while ( 1 ) { asm volatile ("nop"); };
-	}
-
-	while ( 1 ) {
-		if ( DS18X20_start_meas( DS18X20_POWER_EXTERN, 
-				&sensor_id[0] ) == DS18X20_OK ) {
-			_delay_ms( DS18B20_TCONV_12BIT );
-			if ( DS18X20_read_decicelsius( &sensor_id[0], &decicelsius) 
-				     == DS18X20_OK ) {
-				output = decicelsius / 10.0;
-				sprintf( puffer, "%.2f", output );
-				usart0_puts( puffer );
-				usart0_puts("\n");
+	while (1) {
+		uint8_t diff = OW_SEARCH_FIRST;
+		for (uint8_t i = 0; i < 5; ++i) {
+			diff = search_and_display(diff);
+			if (diff == OW_LAST_DEVICE) {
+				break;
 			}
 		}
-		_delay_ms(60000);
+		usart0_puts("\r\n");
 	}
+
+	return 0;
 }
+
 
 

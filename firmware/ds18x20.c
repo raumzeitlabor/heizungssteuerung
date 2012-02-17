@@ -38,7 +38,9 @@ changelog:
 
 /*----------- start of "debug-functions" ---------------*/
 
-#if DS18X20_VERBOSE
+
+//#if DS18X20_VERBOSE
+#if 0
 #if (!DS18X20_DECICELSIUS)
 #error "DS18X20_DECICELSIUS must be enabled for verbose-mode"
 #endif
@@ -303,6 +305,7 @@ uint8_t DS18X20_find_sensor( uint8_t *diff, uint8_t id[] )
 	return ret;
 }
 
+#if 0
 /* get power status of DS18x20 
    input:   id = rom_code 
    returns: DS18X20_POWER_EXTERN or DS18X20_POWER_PARASITE */
@@ -316,7 +319,7 @@ uint8_t DS18X20_get_power_status( uint8_t id[] )
 	ow_reset();
 	return ( pstat ) ? DS18X20_POWER_EXTERN : DS18X20_POWER_PARASITE;
 }
-
+#endif 
 /* start measurement (CONVERT_T) for all sensors if input id==NULL 
    or for single sensor where id is the rom-code */
 uint8_t DS18X20_start_meas( uint8_t with_power_extern, uint8_t id[])
@@ -340,14 +343,14 @@ uint8_t DS18X20_start_meas( uint8_t with_power_extern, uint8_t id[])
 
 	return ret;
 }
-
+#if 0
 // returns 1 if conversion is in progress, 0 if finished
 // not available when parasite powered.
 uint8_t DS18X20_conversion_in_progress(void)
 {
 	return ow_bit_io( 1 ) ? DS18X20_CONVERSION_DONE : DS18X20_CONVERTING;
 }
-
+#endif
 static uint8_t read_scratchpad( uint8_t id[], uint8_t sp[], uint8_t n )
 {
 	uint8_t i;
@@ -366,9 +369,8 @@ static uint8_t read_scratchpad( uint8_t id[], uint8_t sp[], uint8_t n )
 	return ret;
 }
 
-
 #if DS18X20_DECICELSIUS
-
+#if 1
 /* convert scratchpad data to physical value in unit decicelsius */
 static int16_t DS18X20_raw_to_decicelsius( uint8_t familycode, uint8_t sp[] )
 {
@@ -438,7 +440,8 @@ static int16_t DS18X20_raw_to_decicelsius( uint8_t familycode, uint8_t sp[] )
 		return decicelsius;
 	}
 }
-
+#endif
+#if 0
 /* format decicelsius-value into string, itoa method inspired 
    by code from Chris Takahashi for the MSP430 libc, BSD-license 
    modifications mthomas: variable-types, fixed radix 10, use div(), 
@@ -490,7 +493,7 @@ uint8_t DS18X20_format_from_decicelsius( int16_t decicelsius, char str[], uint8_
 	
 	return ret;
 }
-
+#endif 
 /* reads temperature (scratchpad) of sensor with rom-code id
    output: decicelsius 
    returns DS18X20_OK on success */
@@ -506,7 +509,7 @@ uint8_t DS18X20_read_decicelsius( uint8_t id[], int16_t *decicelsius )
 	}
 	return ret;
 }
-
+#if 0
 /* reads temperature (scratchpad) of sensor without id (single sensor)
    output: decicelsius 
    returns DS18X20_OK on success */
@@ -521,12 +524,12 @@ uint8_t DS18X20_read_decicelsius_single( uint8_t familycode, int16_t *decicelsiu
 	}
 	return ret;
 }
-
+#endif 
 #endif /* DS18X20_DECICELSIUS */
 
 
 #if DS18X20_MAX_RESOLUTION
-
+#if 0
 static int32_t DS18X20_raw_to_maxres( uint8_t familycode, uint8_t sp[] )
 {
 	uint16_t measure;
@@ -658,12 +661,12 @@ uint8_t DS18X20_format_from_maxres( int32_t temperaturevalue, char str[], uint8_
 	
 	return ret;
 }
-
+#endif
 #endif /* DS18X20_MAX_RESOLUTION */
 
 
 #if DS18X20_EEPROMSUPPORT
-
+#if 0
 uint8_t DS18X20_write_scratchpad( uint8_t id[], 
 	uint8_t th, uint8_t tl, uint8_t conf)
 {
@@ -729,7 +732,6 @@ uint8_t DS18X20_scratchpad_to_eeprom( uint8_t with_power_extern,
 
 	return ret;
 }
-
 uint8_t DS18X20_eeprom_to_scratchpad( uint8_t id[] )
 {
 	uint8_t ret;
@@ -756,5 +758,6 @@ uint8_t DS18X20_eeprom_to_scratchpad( uint8_t id[] )
 	return ret;
 }
 
+#endif 
 #endif /* DS18X20_EEPROMSUPPORT */
 

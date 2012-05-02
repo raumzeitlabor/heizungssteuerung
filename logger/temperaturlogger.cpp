@@ -77,6 +77,11 @@ void push_temperature(const string & sensorid, T temperature ) {
 	temp_count[sensorid]++;
 }
 
+double round(double r) {
+	return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
+}
+
+
 void check_for_timediff() {
 	string current_time = get_time();
 	if (current_time == last_time) {
@@ -93,8 +98,9 @@ void check_for_timediff() {
 	const time_t tim = time(NULL);
 	bool firstval = true;
 	for (typename map<string, T>::iterator it=temp_sum.begin() ; it != temp_sum.end(); it++) {
+		it->second = round((it->second/temp_count[it->first])*10)/10;
 		if (temp_count[it->first] > 0) {
-			write_log(it->first.c_str(), it->second/temp_count[it->first], tim);
+			write_log(it->first.c_str(), it->second, tim);
 		}
 		if (firstval) {
 			firstval = false;
@@ -103,7 +109,7 @@ void check_for_timediff() {
 			json << ',';
 		}
 		if ((sensor_names.find(it->first) != sensor_names.end()) && isfinite(it->second) && temp_count[it->first] > 0) {
-			json << "{\"id\":\"" << sensor_names[it->first] << "\", \"current_value\":\"" << it->second/temp_count[it->first] << "\"}" << endl;
+			json << "{\"id\":\"" << sensor_names[it->first] << "\", \"current_value\":\"" << it->second << "\"}" << endl;
 		}
 		it->second = 0;
 		temp_count[it->first] = 0;

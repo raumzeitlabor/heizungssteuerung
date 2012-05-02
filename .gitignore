@@ -1,2 +1,4 @@
 logger/pachube.sh
 logger/logs
+logger/log
+logger/pachube.json

@@ -1,0 +1,8 @@
+{"version":"1.0.0","datastreams":[
+{"id":"Temperatur_Raum_Tafel", "current_value":"23.9054"}
+,{"id":"Temperatur_Raum_Beamerplattform", "current_value":"23.1"}
+,{"id":"Temperatur_Getraenkelager", "current_value":"20.6411"}
+,{"id":"Temperatur_Olymp", "current_value":"23.6982"}
+,{"id":"Temperatur_Ätzecke", "current_value":"25.75"}
+
+]}

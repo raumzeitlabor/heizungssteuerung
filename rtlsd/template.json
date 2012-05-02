@@ -1,6 +1,0 @@
-{
-  "version":"1.0.0",
-  "datastreams":[
-      {"id":"temp1", "current_value":"%VALUE%"}
-  ]
-}

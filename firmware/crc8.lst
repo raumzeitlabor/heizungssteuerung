@@ -1,0 +1,87 @@
+   1               		.file	"crc8.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__  = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+  15               	.Ltext0:
+  16               	.global	crc8
+  18               	crc8:
+  19               	.LFB2:
+  20               	.LM1:
+  21               	.LVL0:
+  22               	/* prologue: function */
+  23               	/* frame size = 0 */
+  24 0000 DC01      		movw r26,r24
+  25               	.LM2:
+  26 0002 20E0      		ldi r18,lo8(0)
+  27               	.LVL1:
+  28 0004 40E0      		ldi r20,lo8(0)
+  29 0006 50E0      		ldi r21,hi8(0)
+  30               	.LVL2:
+  31               	.LM3:
+  32 0008 98E1      		ldi r25,lo8(24)
+  33 000a 00C0      		rjmp .L2
+  34               	.LVL3:
+  35               	.L7:
+  36               	.LM4:
+  37 000c FD01      		movw r30,r26
+  38               	.LVL4:
+  39 000e E40F      		add r30,r20
+  40 0010 F51F      		adc r31,r21
+  41 0012 E081      		ld r30,Z
+  42               	.LVL5:
+  43 0014 38E0      		ldi r19,lo8(8)
+  44               	.L6:
+  45               	.LM5:
+  46 0016 8E2F      		mov r24,r30
+  47 0018 8227      		eor r24,r18
+  48               	.LM6:
+  49 001a F82F      		mov r31,r24
+  50 001c F170      		andi r31,lo8(1)
+  51 001e 80FD      		sbrc r24,0
+  52               	.LM7:
+  53 0020 2927      		eor r18,r25
+  54               	.L3:
+  55               	.LM8:
+  56 0022 2695      		lsr r18
+  57               	.LM9:
+  58 0024 F130      		cpi r31,lo8(1)
+  59 0026 01F4      		brne .L4
+  60               	.LM10:
+  61 0028 2068      		ori r18,lo8(-128)
+  62               	.L4:
+  63               	.LM11:
+  64 002a 3150      		subi r19,lo8(-(-1))
+  65               	.LM12:
+  66 002c 01F0      		breq .L5
+  67               	.LM13:
+  68 002e E695      		lsr r30
+  69 0030 00C0      		rjmp .L6
+  70               	.L5:
+  71               	.LM14:
+  72 0032 4F5F      		subi r20,lo8(-(1))
+  73 0034 5F4F      		sbci r21,hi8(-(1))
+  74               	.LVL6:
+  75               	.L2:
+  76 0036 4617      		cp r20,r22
+  77 0038 5707      		cpc r21,r23
+  78 003a 01F4      		brne .L7
+  79               	.LM15:
+  80 003c 822F      		mov r24,r18
+  81               	/* epilogue start */
+  82 003e 0895      		ret
+  83               	.LFE2:
+ 109               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 crc8.c
+     /tmp/ccI3sP7d.s:2      *ABS*:0000003f __SREG__
+     /tmp/ccI3sP7d.s:3      *ABS*:0000003e __SP_H__
+     /tmp/ccI3sP7d.s:4      *ABS*:0000003d __SP_L__
+     /tmp/ccI3sP7d.s:5      *ABS*:00000034 __CCP__
+     /tmp/ccI3sP7d.s:6      *ABS*:00000000 __tmp_reg__
+     /tmp/ccI3sP7d.s:7      *ABS*:00000001 __zero_reg__
+     /tmp/ccI3sP7d.s:18     .text:00000000 crc8
+
+NO UNDEFINED SYMBOLS

@@ -33,6 +33,22 @@ void usart0_puts (const char *s)
     }
 }
 
+uint8_t search_and_start_measurement(uint8_t diff)
+{
+	uint8_t sensor_id[OW_ROMCODE_SIZE];
+#ifndef OW_ONE_BUS
+	ow_set_bus(&PINB,&PORTB,&DDRB,PB0);
+#endif
+	ow_reset();
+	DS18X20_find_sensor( &diff, &sensor_id[0] );
+
+	if( diff == OW_PRESENCE_ERR || diff == OW_DATA_ERR ) {
+		return diff;
+	}
+	DS18X20_start_meas(DS18X20_POWER_EXTERN, &sensor_id[0]);
+	return diff;
+}
+
 uint8_t search_and_display(uint8_t diff)
 {
 	uint8_t sensor_id[OW_ROMCODE_SIZE];
@@ -42,25 +58,23 @@ uint8_t search_and_display(uint8_t diff)
 #ifndef OW_ONE_BUS
 	ow_set_bus(&PINB,&PORTB,&DDRB,PB0);
 #endif
-    ow_reset();
-    DS18X20_find_sensor( &diff, &sensor_id[0] );
+	ow_reset();
+	DS18X20_find_sensor( &diff, &sensor_id[0] );
     
-    if( diff == OW_PRESENCE_ERR || diff == OW_DATA_ERR ) {
-			return diff;
-		}
-		if ( DS18X20_start_meas( DS18X20_POWER_EXTERN, 
-				&sensor_id[0] ) == DS18X20_OK ) {
-			_delay_ms( DS18B20_TCONV_12BIT );
-			if ( DS18X20_read_decicelsius( &sensor_id[0], &decicelsius) 
-				     == DS18X20_OK ) {
-				output = decicelsius / 10.0;
-				sprintf( puffer, " %.2f ", output );
-				uart_put_hex(sensor_id, OW_ROMCODE_SIZE);
-				usart0_puts( puffer );
-			}
-		}
+	if( diff == OW_PRESENCE_ERR || diff == OW_DATA_ERR ) {
+		return diff;
+	}
+	if (DS18X20_read_decicelsius( &sensor_id[0], &decicelsius) == DS18X20_OK) {
+		output = decicelsius / 10.0;
+		sprintf( puffer, " %.2f ", output );
+		uart_put_hex(sensor_id, OW_ROMCODE_SIZE);
+		usart0_puts( puffer );
+		usart0_puts("\r\n");
+	}
+		
 	return diff;
 }
+
 
 int main(void) {
 	
@@ -74,7 +88,15 @@ int main(void) {
 
 	while (1) {
 		uint8_t diff = OW_SEARCH_FIRST;
-		for (uint8_t i = 0; i < 5; ++i) {
+		for (uint16_t i = 0; i < 64000; ++i) {
+			diff = search_and_start_measurement(diff);
+			if (diff == OW_LAST_DEVICE) {
+				break;
+			}
+		}
+		_delay_ms( DS18B20_TCONV_12BIT );
+		diff = OW_SEARCH_FIRST;
+		for (uint16_t i = 0; i < 64000; ++i) {
 			diff = search_and_display(diff);
 			if (diff == OW_LAST_DEVICE) {
 				break;

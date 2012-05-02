@@ -1,0 +1,799 @@
+   1               		.file	"onewire.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__  = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+  15               	.Ltext0:
+  16               	.global	ow_input_pin_state
+  18               	ow_input_pin_state:
+  19               	.LFB12:
+  20               	.LM1:
+  21               	/* prologue: function */
+  22               	/* frame size = 0 */
+  23               	.LM2:
+  24 0000 E091 0000 		lds r30,OW_IN
+  25 0004 F091 0000 		lds r31,(OW_IN)+1
+  26 0008 8081      		ld r24,Z
+  27 000a 9091 0000 		lds r25,OW_PIN_MASK
+  28               	.LM3:
+  29 000e 8923      		and r24,r25
+  30               	/* epilogue start */
+  31 0010 0895      		ret
+  32               	.LFE12:
+  34               	.global	ow_parasite_enable
+  36               	ow_parasite_enable:
+  37               	.LFB13:
+  38               	.LM4:
+  39               	/* prologue: function */
+  40               	/* frame size = 0 */
+  41               	.LM5:
+  42 0012 E091 0000 		lds r30,OW_OUT
+  43 0016 F091 0000 		lds r31,(OW_OUT)+1
+  44 001a 8081      		ld r24,Z
+  45 001c 9091 0000 		lds r25,OW_PIN_MASK
+  46 0020 892B      		or r24,r25
+  47 0022 8083      		st Z,r24
+  48               	.LM6:
+  49 0024 E091 0000 		lds r30,OW_DDR
+  50 0028 F091 0000 		lds r31,(OW_DDR)+1
+  51 002c 8081      		ld r24,Z
+  52 002e 9091 0000 		lds r25,OW_PIN_MASK
+  53 0032 892B      		or r24,r25
+  54 0034 8083      		st Z,r24
+  55               	/* epilogue start */
+  56               	.LM7:
+  57 0036 0895      		ret
+  58               	.LFE13:
+  60               	.global	ow_parasite_disable
+  62               	ow_parasite_disable:
+  63               	.LFB14:
+  64               	.LM8:
+  65               	/* prologue: function */
+  66               	/* frame size = 0 */
+  67               	.LM9:
+  68 0038 E091 0000 		lds r30,OW_DDR
+  69 003c F091 0000 		lds r31,(OW_DDR)+1
+  70 0040 9081      		ld r25,Z
+  71 0042 8091 0000 		lds r24,OW_PIN_MASK
+  72 0046 8095      		com r24
+  73 0048 8923      		and r24,r25
+  74 004a 8083      		st Z,r24
+  75               	/* epilogue start */
+  76               	.LM10:
+  77 004c 0895      		ret
+  78               	.LFE14:
+  80               	.global	ow_reset
+  82               	ow_reset:
+  83               	.LFB15:
+  84               	.LM11:
+  85               	/* prologue: function */
+  86               	/* frame size = 0 */
+  87               	.LM12:
+  88 004e E091 0000 		lds r30,OW_OUT
+  89 0052 F091 0000 		lds r31,(OW_OUT)+1
+  90 0056 9081      		ld r25,Z
+  91 0058 8091 0000 		lds r24,OW_PIN_MASK
+  92 005c 8095      		com r24
+  93 005e 8923      		and r24,r25
+  94 0060 8083      		st Z,r24
+  95               	.LM13:
+  96 0062 E091 0000 		lds r30,OW_DDR
+  97 0066 F091 0000 		lds r31,(OW_DDR)+1
+  98 006a 8081      		ld r24,Z
+  99 006c 9091 0000 		lds r25,OW_PIN_MASK
+ 100 0070 892B      		or r24,r25
+ 101 0072 8083      		st Z,r24
+ 102               	.LBB96:
+ 103               	.LBB97:
+ 104               	.LBB98:
+ 105               	.LBB99:
+ 106               	.LBB100:
+ 107               	.LBB101:
+ 108               	.LM14:
+ 109 0074 80EA      		ldi r24,lo8(1440)
+ 110 0076 95E0      		ldi r25,hi8(1440)
+ 111               	.LVL0:
+ 112               	/* #APP */
+ 113               	 ;  105 "/usr/lib/gcc/avr/4.3.5/../../../avr/include/util/delay_basic.h" 1
+ 114 0078 0197      		1: sbiw r24,1
+ 115 007a 01F4      		brne 1b
+ 116               	 ;  0 "" 2
+ 117               	/* #NOAPP */
+ 118               	.LBE101:
+ 119               	.LBE100:
+ 120               	.LBE99:
+ 121               	.LBE98:
+ 122               	.LBE97:
+ 123               	.LBE96:
+ 124               	.LBB102:
+ 125               	.LM15:
+ 126 007c 2FB7      		in r18,__SREG__
+ 127               	.LVL1:
+ 128               	.LBB111:
+ 129               	.LBB112:
+ 130               	.LM16:
+ 131               	/* #APP */
+ 132               	 ;  50 "/usr/lib/gcc/avr/4.3.5/../../../avr/include/util/atomic.h" 1
+ 133 007e F894      		cli
+ 134               	 ;  0 "" 2
+ 135               	/* #NOAPP */
+ 136               	.LBE112:
+ 137               	.LBE111:
+ 138               	.LM17:
+ 139 0080 E091 0000 		lds r30,OW_DDR
+ 140 0084 F091 0000 		lds r31,(OW_DDR)+1
+ 141 0088 9081      		ld r25,Z
+ 142 008a 8091 0000 		lds r24,OW_PIN_MASK
+ 143               	.LVL2:
+ 144 008e 8095      		com r24
+ 145 0090 8923      		and r24,r25
+ 146 0092 8083      		st Z,r24
+ 147               	.LM18:
+ 148 0094 E091 0000 		lds r30,OW_OUT
+ 149 0098 F091 0000 		lds r31,(OW_OUT)+1
+ 150 009c 8081      		ld r24,Z
+ 151 009e 9091 0000 		lds r25,OW_PIN_MASK
+ 152 00a2 892B      		or r24,r25
+ 153 00a4 8083      		st Z,r24
+ 154               	.LBB105:
+ 155               	.LBB106:
+ 156               	.LBB107:
+ 157               	.LBB108:
+ 158               	.LBB109:
+ 159               	.LBB110:
+ 160               	.LM19:
+ 161 00a6 80EC      		ldi r24,lo8(192)
+ 162 00a8 90E0      		ldi r25,hi8(192)
+ 163               	.LVL3:
+ 164               	/* #APP */
+ 165               	 ;  105 "/usr/lib/gcc/avr/4.3.5/../../../avr/include/util/delay_basic.h" 1
+ 166 00aa 0197      		1: sbiw r24,1
+ 167 00ac 01F4      		brne 1b
+ 168               	 ;  0 "" 2
+ 169               	/* #NOAPP */
+ 170               	.LBE110:
+ 171               	.LBE109:
+ 172               	.LBE108:
+ 173               	.LBE107:
+ 174               	.LBE106:
+ 175               	.LBE105:
+ 176               	.LM20:
+ 177 00ae E091 0000 		lds r30,OW_IN
+ 178 00b2 F091 0000 		lds r31,(OW_IN)+1
+ 179 00b6 4081      		ld r20,Z
+ 180 00b8 3091 0000 		lds r19,OW_PIN_MASK
+ 181               	.LBB103:
+ 182               	.LBB104:
+ 183               	.LM21:
+ 184 00bc 2FBF      		out __SREG__,r18
+ 185               	.LM22:
+ 186               	.LBE104:
+ 187               	.LBE103:
+ 188               	.LBE102:
+ 189               	.LBB113:
+ 190               	.LBB114:
+ 191               	.LBB115:
+ 192               	.LBB116:
+ 193               	.LBB117:
+ 194               	.LBB118:
+ 195               	.LM23:
+ 196 00be 80EE      		ldi r24,lo8(1248)
+ 197 00c0 94E0      		ldi r25,hi8(1248)
+ 198               	.LVL4:
+ 199               	/* #APP */
+ 200               	 ;  105 "/usr/lib/gcc/avr/4.3.5/../../../avr/include/util/delay_basic.h" 1
+ 201 00c2 0197      		1: sbiw r24,1
+ 202 00c4 01F4      		brne 1b
+ 203               	 ;  0 "" 2
+ 204               	/* #NOAPP */
+ 205               	.LBE118:
+ 206               	.LBE117:
+ 207               	.LBE116:
+ 208               	.LBE115:
+ 209               	.LBE114:
+ 210               	.LBE113:
+ 211               	.LM24:
+ 212 00c6 E091 0000 		lds r30,OW_IN
+ 213 00ca F091 0000 		lds r31,(OW_IN)+1
+ 214 00ce 8081      		ld r24,Z
+ 215               	.LVL5:
+ 216 00d0 9091 0000 		lds r25,OW_PIN_MASK
+ 217 00d4 8923      		and r24,r25
+ 218 00d6 01F4      		brne .L8
+ 219 00d8 81E0      		ldi r24,lo8(1)
+ 220               	.LVL6:
+ 221 00da 0895      		ret
+ 222               	.LVL7:
+ 223               	.L8:
+ 224               	.LBB119:
+ 225               	.LM25:
+ 226 00dc 842F      		mov r24,r20
+ 227               	.LVL8:
+ 228 00de 8323      		and r24,r19
+ 229               	.LVL9:
+ 230               	.LBE119:
+ 231               	.LM26:
+ 232 00e0 0895      		ret
+ 233               	.LFE15:
+ 235               	.global	ow_set_bus
+ 237               	ow_set_bus:
+ 238               	.LFB11:
+ 239               	.LM27:
+ 240               	.LVL10:
+ 241               	/* prologue: function */
+ 242               	/* frame size = 0 */
+ 243               	.LM28:
+ 244 00e2 5093 0000 		sts (OW_DDR)+1,r21
+ 245 00e6 4093 0000 		sts OW_DDR,r20
+ 246               	.LM29:
+ 247 00ea 7093 0000 		sts (OW_OUT)+1,r23
+ 248 00ee 6093 0000 		sts OW_OUT,r22
+ 249               	.LM30:
+ 250 00f2 9093 0000 		sts (OW_IN)+1,r25
+ 251 00f6 8093 0000 		sts OW_IN,r24
+ 252               	.LM31:
+ 253 00fa 81E0      		ldi r24,lo8(1)
+ 254 00fc 90E0      		ldi r25,hi8(1)
+ 255               	.LVL11:
+ 256 00fe 00C0      		rjmp 2f
+ 257 0100 880F      	1:	lsl r24
+ 258 0102 991F      		rol r25
+ 259 0104 2A95      	2:	dec r18
+ 260 0106 02F4      		brpl 1b
+ 261 0108 8093 0000 		sts OW_PIN_MASK,r24
+ 262               	.LM32:
+ 263 010c 0E94 0000 		call ow_reset
+ 264               	.LVL12:
+ 265               	/* epilogue start */
+ 266               	.LM33:
+ 267 0110 0895      		ret
+ 268               	.LFE11:
+ 271               	ow_bit_io_intern:
+ 272               	.LFB16:
+ 273               	.LM34:
+ 274               	.LVL13:
+ 275               	/* prologue: function */
+ 276               	/* frame size = 0 */
+ 277 0112 282F      		mov r18,r24
+ 278               	.LBB120:
+ 279               	.LM35:
+ 280 0114 3FB7      		in r19,__SREG__
+ 281               	.LVL14:
+ 282               	.LBB121:
+ 283               	.LBB122:
+ 284               	.LM36:
+ 285               	/* #APP */
+ 286               	 ;  50 "/usr/lib/gcc/avr/4.3.5/../../../avr/include/util/atomic.h" 1
+ 287 0116 F894      		cli
+ 288               	 ;  0 "" 2
+ 289               	/* #NOAPP */
+ 290               	.LBE122:
+ 291               	.LBE121:
+ 292               	.LM37:
+ 293 0118 E091 0000 		lds r30,OW_OUT
+ 294 011c F091 0000 		lds r31,(OW_OUT)+1
+ 295 0120 9081      		ld r25,Z
+ 296 0122 8091 0000 		lds r24,OW_PIN_MASK
+ 297               	.LVL15:
+ 298 0126 8095      		com r24
+ 299 0128 8923      		and r24,r25
+ 300 012a 8083      		st Z,r24
+ 301               	.LM38:
+ 302 012c E091 0000 		lds r30,OW_DDR
+ 303 0130 F091 0000 		lds r31,(OW_DDR)+1
+ 304 0134 8081      		ld r24,Z
+ 305 0136 9091 0000 		lds r25,OW_PIN_MASK
+ 306 013a 892B      		or r24,r25
+ 307 013c 8083      		st Z,r24
+ 308               	.LBB123:
+ 309               	.LBB124:
+ 310               	.LBB125:
+ 311               	.LBB126:
+ 312               	.LM39:
+ 313 013e 88E0      		ldi r24,lo8(8)
+ 314               	.LVL16:
+ 315               	/* #APP */
+ 316               	 ;  83 "/usr/lib/gcc/avr/4.3.5/../../../avr/include/util/delay_basic.h" 1
+ 317 0140 8A95      		1: dec r24
+ 318 0142 01F4      		brne 1b
+ 319               	 ;  0 "" 2
+ 320               	/* #NOAPP */
+ 321               	.LBE126:
+ 322               	.LBE125:
+ 323               	.LBE124:
+ 324               	.LBE123:
+ 325               	.LM40:
+ 326 0144 2223      		tst r18
+ 327 0146 01F0      		breq .L14
+ 328               	.LM41:
+ 329 0148 E091 0000 		lds r30,OW_DDR
+ 330 014c F091 0000 		lds r31,(OW_DDR)+1
+ 331 0150 9081      		ld r25,Z
+ 332 0152 8091 0000 		lds r24,OW_PIN_MASK
+ 333               	.LVL17:
+ 334 0156 8095      		com r24
+ 335 0158 8923      		and r24,r25
+ 336 015a 8083      		st Z,r24
+ 337               	.LM42:
+ 338 015c E091 0000 		lds r30,OW_OUT
+ 339 0160 F091 0000 		lds r31,(OW_OUT)+1
+ 340 0164 8081      		ld r24,Z
+ 341 0166 9091 0000 		lds r25,OW_PIN_MASK
+ 342 016a 892B      		or r24,r25
+ 343 016c 8083      		st Z,r24
+ 344               	.LVL18:
+ 345               	.L14:
+ 346               	.LBB127:
+ 347               	.LBB128:
+ 348               	.LBB129:
+ 349               	.LBB130:
+ 350               	.LM43:
+ 351 016e 80E3      		ldi r24,lo8(48)
+ 352               	.LVL19:
+ 353               	/* #APP */
+ 354               	 ;  83 "/usr/lib/gcc/avr/4.3.5/../../../avr/include/util/delay_basic.h" 1
+ 355 0170 8A95      		1: dec r24
+ 356 0172 01F4      		brne 1b
+ 357               	 ;  0 "" 2
+ 358               	/* #NOAPP */
+ 359               	.LBE130:
+ 360               	.LBE129:
+ 361               	.LBE128:
+ 362               	.LBE127:
+ 363               	.LM44:
+ 364 0174 E091 0000 		lds r30,OW_IN
+ 365 0178 F091 0000 		lds r31,(OW_IN)+1
+ 366 017c 8081      		ld r24,Z
+ 367               	.LVL20:
+ 368 017e 9091 0000 		lds r25,OW_PIN_MASK
+ 369 0182 8923      		and r24,r25
+ 370 0184 01F4      		brne .L15
+ 371 0186 20E0      		ldi r18,lo8(0)
+ 372               	.L15:
+ 373               	.LBB131:
+ 374               	.LBB132:
+ 375               	.LBB133:
+ 376               	.LBB134:
+ 377               	.LM45:
+ 378 0188 80EB      		ldi r24,lo8(-80)
+ 379               	.LVL21:
+ 380               	/* #APP */
+ 381               	 ;  83 "/usr/lib/gcc/avr/4.3.5/../../../avr/include/util/delay_basic.h" 1
+ 382 018a 8A95      		1: dec r24
+ 383 018c 01F4      		brne 1b
+ 384               	 ;  0 "" 2
+ 385               	/* #NOAPP */
+ 386               	.LBE134:
+ 387               	.LBE133:
+ 388               	.LBE132:
+ 389               	.LBE131:
+ 390               	.LM46:
+ 391 018e E091 0000 		lds r30,OW_OUT
+ 392 0192 F091 0000 		lds r31,(OW_OUT)+1
+ 393 0196 8081      		ld r24,Z
+ 394               	.LVL22:
+ 395 0198 892B      		or r24,r25
+ 396 019a 8083      		st Z,r24
+ 397               	.LM47:
+ 398 019c E091 0000 		lds r30,OW_DDR
+ 399 01a0 F091 0000 		lds r31,(OW_DDR)+1
+ 400 01a4 9081      		ld r25,Z
+ 401 01a6 8091 0000 		lds r24,OW_PIN_MASK
+ 402 01aa 8095      		com r24
+ 403 01ac 8923      		and r24,r25
+ 404 01ae 8083      		st Z,r24
+ 405               	.LM48:
+ 406 01b0 6623      		tst r22
+ 407 01b2 01F0      		breq .L16
+ 408               	.LBB135:
+ 409               	.LBB136:
+ 410               	.LM49:
+ 411 01b4 E091 0000 		lds r30,OW_OUT
+ 412 01b8 F091 0000 		lds r31,(OW_OUT)+1
+ 413 01bc 8081      		ld r24,Z
+ 414 01be 9091 0000 		lds r25,OW_PIN_MASK
+ 415 01c2 892B      		or r24,r25
+ 416 01c4 8083      		st Z,r24
+ 417               	.LM50:
+ 418 01c6 E091 0000 		lds r30,OW_DDR
+ 419 01ca F091 0000 		lds r31,(OW_DDR)+1
+ 420 01ce 8081      		ld r24,Z
+ 421 01d0 9091 0000 		lds r25,OW_PIN_MASK
+ 422 01d4 892B      		or r24,r25
+ 423 01d6 8083      		st Z,r24
+ 424               	.L16:
+ 425               	.LBE136:
+ 426               	.LBE135:
+ 427               	.LBB137:
+ 428               	.LBB138:
+ 429               	.LM51:
+ 430 01d8 3FBF      		out __SREG__,r19
+ 431               	.LM52:
+ 432               	.LBE138:
+ 433               	.LBE137:
+ 434               	.LBE120:
+ 435               	.LBB139:
+ 436               	.LBB140:
+ 437               	.LBB141:
+ 438               	.LBB142:
+ 439               	.LM53:
+ 440 01da 88E2      		ldi r24,lo8(40)
+ 441               	.LVL23:
+ 442               	/* #APP */
+ 443               	 ;  83 "/usr/lib/gcc/avr/4.3.5/../../../avr/include/util/delay_basic.h" 1
+ 444 01dc 8A95      		1: dec r24
+ 445 01de 01F4      		brne 1b
+ 446               	 ;  0 "" 2
+ 447               	/* #NOAPP */
+ 448               	.LBE142:
+ 449               	.LBE141:
+ 450               	.LBE140:
+ 451               	.LBE139:
+ 452               	.LM54:
+ 453 01e0 822F      		mov r24,r18
+ 454               	.LVL24:
+ 455               	/* epilogue start */
+ 456 01e2 0895      		ret
+ 457               	.LFE16:
+ 459               	.global	ow_bit_io
+ 461               	ow_bit_io:
+ 462               	.LFB17:
+ 463               	.LM55:
+ 464               	.LVL25:
+ 465               	/* prologue: function */
+ 466               	/* frame size = 0 */
+ 467               	.LM56:
+ 468 01e4 8170      		andi r24,lo8(1)
+ 469               	.LVL26:
+ 470 01e6 60E0      		ldi r22,lo8(0)
+ 471 01e8 0E94 0000 		call ow_bit_io_intern
+ 472               	/* epilogue start */
+ 473               	.LM57:
+ 474 01ec 0895      		ret
+ 475               	.LFE17:
+ 477               	.global	ow_byte_wr
+ 479               	ow_byte_wr:
+ 480               	.LFB18:
+ 481               	.LM58:
+ 482               	.LVL27:
+ 483 01ee 0F93      		push r16
+ 484 01f0 1F93      		push r17
+ 485               	/* prologue: function */
+ 486               	/* frame size = 0 */
+ 487 01f2 182F      		mov r17,r24
+ 488               	.LM59:
+ 489 01f4 08E0      		ldi r16,lo8(8)
+ 490               	.LVL28:
+ 491               	.L22:
+ 492               	.LM60:
+ 493 01f6 812F      		mov r24,r17
+ 494 01f8 8170      		andi r24,lo8(1)
+ 495 01fa 0E94 0000 		call ow_bit_io
+ 496               	.LM61:
+ 497 01fe 1695      		lsr r17
+ 498               	.LM62:
+ 499 0200 8111      		cpse r24,__zero_reg__
+ 500               	.LM63:
+ 501 0202 1068      		ori r17,lo8(-128)
+ 502               	.L21:
+ 503               	.LM64:
+ 504 0204 0150      		subi r16,lo8(-(-1))
+ 505 0206 01F4      		brne .L22
+ 506               	.LM65:
+ 507 0208 812F      		mov r24,r17
+ 508               	/* epilogue start */
+ 509 020a 1F91      		pop r17
+ 510               	.LVL29:
+ 511 020c 0F91      		pop r16
+ 512               	.LVL30:
+ 513 020e 0895      		ret
+ 514               	.LFE18:
+ 516               	.global	ow_byte_wr_with_parasite_enable
+ 518               	ow_byte_wr_with_parasite_enable:
+ 519               	.LFB19:
+ 520               	.LM66:
+ 521               	.LVL31:
+ 522 0210 0F93      		push r16
+ 523 0212 1F93      		push r17
+ 524               	/* prologue: function */
+ 525               	/* frame size = 0 */
+ 526 0214 182F      		mov r17,r24
+ 527               	.LM67:
+ 528 0216 08E0      		ldi r16,lo8(8)
+ 529               	.LVL32:
+ 530               	.L29:
+ 531 0218 812F      		mov r24,r17
+ 532               	.LVL33:
+ 533 021a 8170      		andi r24,lo8(1)
+ 534               	.LM68:
+ 535 021c 0130      		cpi r16,lo8(1)
+ 536 021e 01F0      		breq .L26
+ 537               	.LM69:
+ 538 0220 60E0      		ldi r22,lo8(0)
+ 539 0222 00C0      		rjmp .L32
+ 540               	.L26:
+ 541               	.LM70:
+ 542 0224 61E0      		ldi r22,lo8(1)
+ 543               	.L32:
+ 544 0226 0E94 0000 		call ow_bit_io_intern
+ 545               	.LM71:
+ 546 022a 1695      		lsr r17
+ 547               	.LM72:
+ 548               	.LVL34:
+ 549 022c 8111      		cpse r24,__zero_reg__
+ 550               	.LM73:
+ 551 022e 1068      		ori r17,lo8(-128)
+ 552               	.L28:
+ 553               	.LM74:
+ 554 0230 0150      		subi r16,lo8(-(-1))
+ 555 0232 01F4      		brne .L29
+ 556               	.LM75:
+ 557 0234 812F      		mov r24,r17
+ 558               	.LVL35:
+ 559               	/* epilogue start */
+ 560 0236 1F91      		pop r17
+ 561               	.LVL36:
+ 562 0238 0F91      		pop r16
+ 563               	.LVL37:
+ 564 023a 0895      		ret
+ 565               	.LFE19:
+ 567               	.global	ow_byte_rd
+ 569               	ow_byte_rd:
+ 570               	.LFB20:
+ 571               	.LM76:
+ 572               	/* prologue: function */
+ 573               	/* frame size = 0 */
+ 574               	.LM77:
+ 575 023c 8FEF      		ldi r24,lo8(-1)
+ 576 023e 0E94 0000 		call ow_byte_wr
+ 577               	/* epilogue start */
+ 578               	.LM78:
+ 579 0242 0895      		ret
+ 580               	.LFE20:
+ 582               	.global	ow_rom_search
+ 584               	ow_rom_search:
+ 585               	.LFB21:
+ 586               	.LM79:
+ 587               	.LVL38:
+ 588 0244 DF92      		push r13
+ 589 0246 EF92      		push r14
+ 590 0248 FF92      		push r15
+ 591 024a 0F93      		push r16
+ 592 024c 1F93      		push r17
+ 593 024e CF93      		push r28
+ 594 0250 DF93      		push r29
+ 595               	/* prologue: function */
+ 596               	/* frame size = 0 */
+ 597 0252 E82E      		mov r14,r24
+ 598 0254 EB01      		movw r28,r22
+ 599               	.LM80:
+ 600 0256 0E94 0000 		call ow_reset
+ 601               	.LVL39:
+ 602 025a 8823      		tst r24
+ 603 025c 01F4      		brne .L36
+ 604               	.LM81:
+ 605 025e 80EF      		ldi r24,lo8(-16)
+ 606 0260 0E94 0000 		call ow_byte_wr
+ 607 0264 80E4      		ldi r24,lo8(64)
+ 608               	.LVL40:
+ 609 0266 FF24      		clr r15
+ 610               	.LVL41:
+ 611               	.L43:
+ 612 0268 182F      		mov r17,r24
+ 613               	.LM82:
+ 614 026a 98EF      		ldi r25,lo8(-8)
+ 615 026c D92E      		mov r13,r25
+ 616 026e D80E      		add r13,r24
+ 617               	.LVL42:
+ 618               	.L42:
+ 619               	.LM83:
+ 620 0270 81E0      		ldi r24,lo8(1)
+ 621 0272 0E94 0000 		call ow_bit_io
+ 622 0276 082F      		mov r16,r24
+ 623               	.LM84:
+ 624 0278 81E0      		ldi r24,lo8(1)
+ 625 027a 0E94 0000 		call ow_bit_io
+ 626 027e 8823      		tst r24
+ 627 0280 01F0      		breq .L37
+ 628               	.LM85:
+ 629 0282 0023      		tst r16
+ 630 0284 01F0      		breq .L38
+ 631 0286 8EEF      		ldi r24,lo8(-2)
+ 632 0288 F82E      		mov r15,r24
+ 633 028a 00C0      		rjmp .L39
+ 634               	.L37:
+ 635               	.LM86:
+ 636 028c 0023      		tst r16
+ 637 028e 01F4      		brne .L38
+ 638               	.LM87:
+ 639 0290 1E15      		cp r17,r14
+ 640 0292 00F0      		brlo .L40
+ 641 0294 8881      		ld r24,Y
+ 642 0296 80FF      		sbrs r24,0
+ 643 0298 00C0      		rjmp .L38
+ 644 029a E116      		cp r14,r17
+ 645 029c 01F0      		breq .L38
+ 646               	.L40:
+ 647 029e F12E      		mov r15,r17
+ 648 02a0 01E0      		ldi r16,lo8(1)
+ 649               	.L38:
+ 650               	.LM88:
+ 651 02a2 802F      		mov r24,r16
+ 652 02a4 0E94 0000 		call ow_bit_io
+ 653               	.LM89:
+ 654 02a8 8881      		ld r24,Y
+ 655 02aa 8695      		lsr r24
+ 656 02ac 8883      		st Y,r24
+ 657               	.LM90:
+ 658 02ae 0023      		tst r16
+ 659 02b0 01F0      		breq .L41
+ 660               	.LM91:
+ 661 02b2 8068      		ori r24,lo8(-128)
+ 662 02b4 8883      		st Y,r24
+ 663               	.L41:
+ 664               	.LM92:
+ 665 02b6 1150      		subi r17,lo8(-(-1))
+ 666               	.LM93:
+ 667 02b8 1D15      		cp r17,r13
+ 668 02ba 01F4      		brne .L42
+ 669               	.LM94:
+ 670 02bc 1123      		tst r17
+ 671 02be 01F0      		breq .L39
+ 672               	.LM95:
+ 673 02c0 2196      		adiw r28,1
+ 674 02c2 812F      		mov r24,r17
+ 675 02c4 00C0      		rjmp .L43
+ 676               	.LVL43:
+ 677               	.L36:
+ 678 02c6 FF24      		clr r15
+ 679 02c8 FA94      		dec r15
+ 680               	.LVL44:
+ 681               	.L39:
+ 682               	.LM96:
+ 683 02ca 8F2D      		mov r24,r15
+ 684               	/* epilogue start */
+ 685 02cc DF91      		pop r29
+ 686 02ce CF91      		pop r28
+ 687               	.LVL45:
+ 688 02d0 1F91      		pop r17
+ 689               	.LVL46:
+ 690 02d2 0F91      		pop r16
+ 691               	.LVL47:
+ 692 02d4 FF90      		pop r15
+ 693               	.LVL48:
+ 694 02d6 EF90      		pop r14
+ 695               	.LVL49:
+ 696 02d8 DF90      		pop r13
+ 697 02da 0895      		ret
+ 698               	.LFE21:
+ 701               	ow_command_intern:
+ 702               	.LFB22:
+ 703               	.LM97:
+ 704               	.LVL50:
+ 705 02dc FF92      		push r15
+ 706 02de 0F93      		push r16
+ 707 02e0 1F93      		push r17
+ 708 02e2 CF93      		push r28
+ 709 02e4 DF93      		push r29
+ 710               	/* prologue: function */
+ 711               	/* frame size = 0 */
+ 712 02e6 082F      		mov r16,r24
+ 713 02e8 EB01      		movw r28,r22
+ 714 02ea F42E      		mov r15,r20
+ 715               	.LM98:
+ 716 02ec 0E94 0000 		call ow_reset
+ 717               	.LVL51:
+ 718               	.LM99:
+ 719 02f0 2097      		sbiw r28,0
+ 720 02f2 01F0      		breq .L47
+ 721               	.LM100:
+ 722 02f4 85E5      		ldi r24,lo8(85)
+ 723 02f6 0E94 0000 		call ow_byte_wr
+ 724 02fa 18E0      		ldi r17,lo8(8)
+ 725               	.LVL52:
+ 726               	.L48:
+ 727               	.LM101:
+ 728 02fc 8991      		ld r24,Y+
+ 729 02fe 0E94 0000 		call ow_byte_wr
+ 730               	.LM102:
+ 731 0302 1150      		subi r17,lo8(-(-1))
+ 732 0304 01F4      		brne .L48
+ 733 0306 00C0      		rjmp .L49
+ 734               	.LVL53:
+ 735               	.L47:
+ 736               	.LM103:
+ 737 0308 8CEC      		ldi r24,lo8(-52)
+ 738 030a 0E94 0000 		call ow_byte_wr
+ 739               	.LVL54:
+ 740               	.L49:
+ 741               	.LM104:
+ 742 030e FF20      		tst r15
+ 743 0310 01F0      		breq .L50
+ 744               	.LM105:
+ 745 0312 802F      		mov r24,r16
+ 746 0314 0E94 0000 		call ow_byte_wr_with_parasite_enable
+ 747 0318 00C0      		rjmp .L52
+ 748               	.L50:
+ 749               	.LM106:
+ 750 031a 802F      		mov r24,r16
+ 751 031c 0E94 0000 		call ow_byte_wr
+ 752               	.L52:
+ 753               	/* epilogue start */
+ 754               	.LM107:
+ 755 0320 DF91      		pop r29
+ 756 0322 CF91      		pop r28
+ 757               	.LVL55:
+ 758 0324 1F91      		pop r17
+ 759               	.LVL56:
+ 760 0326 0F91      		pop r16
+ 761               	.LVL57:
+ 762 0328 FF90      		pop r15
+ 763               	.LVL58:
+ 764 032a 0895      		ret
+ 765               	.LFE22:
+ 767               	.global	ow_command
+ 769               	ow_command:
+ 770               	.LFB23:
+ 771               	.LM108:
+ 772               	.LVL59:
+ 773               	/* prologue: function */
+ 774               	/* frame size = 0 */
+ 775               	.LM109:
+ 776 032c 40E0      		ldi r20,lo8(0)
+ 777 032e 0E94 0000 		call ow_command_intern
+ 778               	.LVL60:
+ 779               	/* epilogue start */
+ 780               	.LM110:
+ 781 0332 0895      		ret
+ 782               	.LFE23:
+ 784               	.global	ow_command_with_parasite_enable
+ 786               	ow_command_with_parasite_enable:
+ 787               	.LFB24:
+ 788               	.LM111:
+ 789               	.LVL61:
+ 790               	/* prologue: function */
+ 791               	/* frame size = 0 */
+ 792               	.LM112:
+ 793 0334 41E0      		ldi r20,lo8(1)
+ 794 0336 0E94 0000 		call ow_command_intern
+ 795               	.LVL62:
+ 796               	/* epilogue start */
+ 797               	.LM113:
+ 798 033a 0895      		ret
+ 799               	.LFE24:
+ 801               		.comm OW_PIN_MASK,1,1
+ 802               		.comm OW_IN,2,1
+ 803               		.comm OW_OUT,2,1
+ 804               		.comm OW_DDR,2,1
+ 933               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 onewire.c
+     /tmp/ccPwBpFd.s:2      *ABS*:0000003f __SREG__
+     /tmp/ccPwBpFd.s:3      *ABS*:0000003e __SP_H__
+     /tmp/ccPwBpFd.s:4      *ABS*:0000003d __SP_L__
+     /tmp/ccPwBpFd.s:5      *ABS*:00000034 __CCP__
+     /tmp/ccPwBpFd.s:6      *ABS*:00000000 __tmp_reg__
+     /tmp/ccPwBpFd.s:7      *ABS*:00000001 __zero_reg__
+     /tmp/ccPwBpFd.s:18     .text:00000000 ow_input_pin_state
+                            *COM*:00000002 OW_IN
+                            *COM*:00000001 OW_PIN_MASK
+     /tmp/ccPwBpFd.s:36     .text:00000012 ow_parasite_enable
+                            *COM*:00000002 OW_OUT
+                            *COM*:00000002 OW_DDR
+     /tmp/ccPwBpFd.s:62     .text:00000038 ow_parasite_disable
+     /tmp/ccPwBpFd.s:82     .text:0000004e ow_reset
+     /tmp/ccPwBpFd.s:237    .text:000000e2 ow_set_bus
+     /tmp/ccPwBpFd.s:271    .text:00000112 ow_bit_io_intern
+     /tmp/ccPwBpFd.s:461    .text:000001e4 ow_bit_io
+     /tmp/ccPwBpFd.s:479    .text:000001ee ow_byte_wr
+     /tmp/ccPwBpFd.s:518    .text:00000210 ow_byte_wr_with_parasite_enable
+     /tmp/ccPwBpFd.s:569    .text:0000023c ow_byte_rd
+     /tmp/ccPwBpFd.s:584    .text:00000244 ow_rom_search
+     /tmp/ccPwBpFd.s:701    .text:000002dc ow_command_intern
+     /tmp/ccPwBpFd.s:769    .text:0000032c ow_command
+     /tmp/ccPwBpFd.s:786    .text:00000334 ow_command_with_parasite_enable
+
+UNDEFINED SYMBOLS
+__do_clear_bss

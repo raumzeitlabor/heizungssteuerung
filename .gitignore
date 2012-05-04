@@ -1,4 +1,5 @@
-logger/pachube.sh
-logger/logs
-logger/log
-logger/pachube.json
+software/logs
+software/config.py
+software/temp1.svg
+software/temp2.svg
+*.pyc

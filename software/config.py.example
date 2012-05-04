@@ -1,0 +1,16 @@
+# Heizungssteuerung Configuration
+
+API_KEY = 'INSERT_API_KEY_HERE'
+API_URL = 42055
+
+sensors = {}
+sensors["10b257290208008c"] = {"pachube":"Temperatur_aussen"}
+sensors["287f085102000084"] = {"pachube":"Temperatur_Heizung_Ruecklauf"}
+sensors["28d9075102000005"] = {"pachube":"Temperatur_Heizung_Vorlauf"}
+sensors["101c0c2902080026"] = {"pachube":"Temperatur_Raum_Beamerplattform"}
+sensors["101a712902080015"] = {"pachube":"Temperatur_Raum_Tafel"}
+sensors["108e29ce010800f8"] = {"pachube":"Temperatur_Getraenkelager"}
+sensors["10b620290208006c"] = {"pachube":"Temperatur_Aetzecke"}
+sensors["1099302902080082"] = {"pachube":"Temperatur_Olymp"}
+
+log_dir = "logs/"

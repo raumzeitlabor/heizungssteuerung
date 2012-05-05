@@ -1,4 +1,4 @@
 #!/bin/bash
 cd /root/heizungssteuerung/software
-screen -dmS ./logger.py
+./logger.py > logs/mainlog 2>&1 &
 

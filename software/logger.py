@@ -5,9 +5,13 @@ import serial
 import thread
 import re
 import time
-#import eeml
+import eeml
 
-from hausbus2 import hausbus2
+import os, sys
+lib_path = os.path.abspath('./hausbus2')
+sys.path.append(lib_path)
+
+import hausbus2
 
 import config
 
@@ -48,4 +52,4 @@ except:
 	print "Error: unable to start thread"
 
 
-hausbus2.start(8080)	
+hausbus2.start(80)	

@@ -31,7 +31,11 @@ def pachubeThread():
 			open(config.log_dir + key,"a").write(str(int(round(time.time()))) + "\t" + value + "\n")
 			hausbus2.variables["temperature"][config.sensors[key]["hausbus"]] = value
 		feed.update(update_data)
-		feed.put()
+		try:
+			feed.put()
+		except (socket.gaierror, socket.herror), err:
+			print "Couldn't send data to pachube: ", err
+			
 		sensor_values.clear()
 		
 

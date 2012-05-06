@@ -28,7 +28,7 @@ def pachubeThread():
 		for key, value in sensor_values.items():
 			#print sensors[key]["pachube"] + " = " + value
 			update_data.append(eeml.Data(config.sensors[key]["pachube"], value, unit=eeml.Celsius()))
-			open(config.log_dir + key,"a").write(str(int(round(time.time()))) + "\t" + value + "\n")
+			open(config.log_dir + key,"a").write(str(int(round(time.time()))) + "\t" + str(round(value,2)) + "\n")
 			hausbus2.variables["temperature"][config.sensors[key]["hausbus"]] = value
 		feed.update(update_data)
 		try:
@@ -46,7 +46,7 @@ def serialThread():
 		line = ser.readline().strip()
 		match = regex.search(line)
 		if (match) :
-			sensor_values[match.group(1)] = match.group(2)
+			sensor_values[match.group(1)] = float(match.group(2))
 
 hausbus2.variables["temperature"] = {}		
 try:

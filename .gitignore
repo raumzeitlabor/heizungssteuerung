@@ -1,5 +1,25 @@
+# Firmware related
+firmware/*.hex
+firmware/*.eep
+firmware/*.obj
+firmware/*.cof
+firmware/*.elf
+firmware/*.map
+firmware/*.obj
+firmware/*.a90
+firmware/*.sym
+firmware/*.lnk
+firmware/*.lss
+firmware/*.o
+firmware/*.lst
+firmware/*.s
+firmware/*.d
+
+# Software related
 software/logs
 software/config.py
 software/temp1.svg
 software/temp2.svg
-*.pyc
+software/*.pyc
+software/*.pyo
+software/.dep

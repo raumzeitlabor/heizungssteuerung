@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # coding=utf8
 
+import socket
 import serial
 import thread
 import re

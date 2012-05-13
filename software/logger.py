@@ -7,6 +7,7 @@ import thread
 import re
 import time
 import eeml
+import copy
 
 import os, sys
 lib_path = os.path.abspath('./hausbus2')
@@ -42,14 +43,39 @@ def pachubeThread():
 
 def serialThread():
 	ser = serial.Serial('/dev/ttyUSB0', 19200)
-	regex = re.compile("^sensor: ([0-9a-f]{16}) (-?\d+\.\d+)")
+	temperatur_regex = re.compile("^sensor: ([0-9a-f]{16}) (-?\d+\.\d+)")
+	port_regex = re.compile("^windows ([abd]): ([01]{8})")
 	while 1:
 		line = ser.readline().strip()
-		match = regex.search(line)
+		match = temperatur_regex.search(line)
 		if (match) :
 			sensor_values[match.group(1)] = float(match.group(2))
+		match = port_regex.search(line)
+		if (match) :
+			hausbus2.variables["io_ports"][match.group(1)] = match.group(2)
+			updateWindows()
 
-hausbus2.variables["temperature"] = {}		
+def initWindows():
+	hausbus2.variables["windows"]["state"] = copy.deepcopy(config.windows)
+	for row_id, row in enumerate(config.windows):
+		for col_id, window in enumerate(row):
+			if (window != "x" and window != "?") :
+				hausbus2.variables["windows"]["state"][row_id][col_id] = "?"
+
+def updateWindows():	
+	for row_id, row in enumerate(config.windows):
+		for col_id, window in enumerate(row):			
+			if (window != "x" and window != "?") :
+				if (window[0].lower() in hausbus2.variables["io_ports"]) :
+					hausbus2.variables["windows"]["state"][row_id][col_id] = hausbus2.variables["io_ports"][window[0].lower()][int(window[1])]
+				else :
+					hausbus2.variables["windows"]["state"][row_id][col_id] = "!"
+
+hausbus2.variables["temperature"] = {}
+hausbus2.variables["io_ports"] = {}
+hausbus2.variables["windows"] = {}
+initWindows()
+
 try:
 	thread.start_new_thread( pachubeThread, () )
 	thread.start_new_thread( serialThread, () )

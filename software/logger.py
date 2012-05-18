@@ -9,6 +9,8 @@ import time
 import eeml
 import copy
 
+from httplib import BadStatusLine
+
 import os, sys
 lib_path = os.path.abspath('./hausbus2')
 sys.path.append(lib_path)
@@ -35,7 +37,7 @@ def pachubeThread():
 		feed.update(update_data)
 		try:
 			feed.put()
-		except (socket.gaierror, socket.herror), err:
+		except (socket.gaierror, socket.herror, BadStatusLine), err:
 			print "Couldn't send data to pachube: ", err
 			
 		sensor_values.clear()

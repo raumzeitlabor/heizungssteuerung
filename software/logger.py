@@ -29,15 +29,16 @@ def pachubeThread():
 		#print sensor_values
 		update_data = []
 		hausbus2.variables["temperature"].clear
-		for key, value in sensor_values.items():
+		for key, values in sensor_values.items():
 			#print sensors[key]["pachube"] + " = " + value
+			value = round(float(sum(values)) / len(values),2)
 			update_data.append(eeml.Data(config.sensors[key]["pachube"], value, unit=eeml.Celsius()))
 			open(config.log_dir + key,"a").write(str(int(round(time.time()))) + "\t" + str(round(value,2)) + "\n")
 			hausbus2.variables["temperature"][config.sensors[key]["hausbus"]] = value
 		feed.update(update_data)
 		try:
 			feed.put()
-		except (socket.gaierror, socket.herror, BadStatusLine), err:
+		except Exception, err:
 			print "Couldn't send data to pachube: ", err
 			
 		sensor_values.clear()
@@ -51,7 +52,9 @@ def serialThread():
 		line = ser.readline().strip()
 		match = temperatur_regex.search(line)
 		if (match) :
-			sensor_values[match.group(1)] = float(match.group(2))
+			if not match.group(1) in sensor_values:
+				sensor_values[match.group(1)] = []
+			sensor_values[match.group(1)].append(float(match.group(2)))
 		match = port_regex.search(line)
 		if (match) :
 			hausbus2.variables["io_ports"][match.group(1)] = match.group(2)

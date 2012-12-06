@@ -39,7 +39,7 @@ def pachubeThread():
 			hausbus2.variables["temperature"][config.sensors[key]["hausbus"]] = value
 			tsdb_command = "put temperatur "+time.localtime()+" "+value+" sensor="+config.sensors[key]["hausbus"]+"\n"
 			tn.write(tsdb_command)
-			print tsdb_command
+			#print tsdb_command
 		feed.update(update_data)
 		tn.close()
 		try:

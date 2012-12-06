@@ -8,6 +8,8 @@ import re
 import time
 import eeml
 import copy
+import pprint
+import telnetlib
 
 from httplib import BadStatusLine
 
@@ -23,26 +25,30 @@ sensor_values = {}
 
 def pachubeThread():
 	# Do stuff to send results to Pachube
-	feed = eeml.Pachube(config.API_URL, config.API_KEY)
+	feed = eeml.Pachube(config.API_URL, config.API_KEY, use_https=False)
 	while 1 :
-		time.sleep(30)
 		#print sensor_values
 		update_data = []
 		hausbus2.variables["temperature"].clear
+		tn = telnetlib.Telnet(config.TSDB_HOST, config.TSDB_PORT, config.TSDB_TIMEOUT)
 		for key, values in sensor_values.items():
 			#print sensors[key]["pachube"] + " = " + value
 			value = round(float(sum(values)) / len(values),2)
 			update_data.append(eeml.Data(config.sensors[key]["pachube"], value, unit=eeml.Celsius()))
-			open(config.log_dir + key,"a").write(str(int(round(time.time()))) + "\t" + str(round(value,2)) + "\n")
+			#open(config.log_dir + key,"a").write(str(int(round(time.time()))) + "\t" + str(round(value,2)) + "\n")
 			hausbus2.variables["temperature"][config.sensors[key]["hausbus"]] = value
+			tsdb_command = "put temperatur "+time.localtime()+" "+value+" sensor="+config.sensors[key]["hausbus"]+"\n"
+			tn.write(tsdb_command)
+			print tsdb_command
 		feed.update(update_data)
+		tn.close()
 		try:
 			feed.put()
 		except Exception, err:
 			print "Couldn't send data to pachube: ", err
 			
 		sensor_values.clear()
-		
+		time.sleep(30)
 
 def serialThread():
 	ser = serial.Serial('/dev/ttyUSB0', 19200)

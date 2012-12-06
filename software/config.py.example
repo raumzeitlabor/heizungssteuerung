@@ -1,5 +1,9 @@
 # Heizungssteuerung Configuration
 
+TSDB_HOST = "INSERT_OpenTSDB_HOSTNAME_HERE"
+TSDB_PORT = 4242
+TSDB_TIMEOUT = 5
+
 API_KEY = 'INSERT_API_KEY_HERE'
 API_URL = 42055
 

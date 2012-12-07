@@ -37,7 +37,7 @@ def pachubeThread():
 			update_data.append(eeml.Data(config.sensors[key]["pachube"], value, unit=eeml.Celsius()))
 			#open(config.log_dir + key,"a").write(str(int(round(time.time()))) + "\t" + str(round(value,2)) + "\n")
 			hausbus2.variables["temperature"][config.sensors[key]["hausbus"]] = value
-			tsdb_command = "put temperatur "+time.localtime()+" "+value+" sensor="+config.sensors[key]["hausbus"]+"\n"
+			tsdb_command = "put temperatur "+str(time.strftime("%s"))+" "+str(value)+" sensor="+config.sensors[key]["hausbus"]+"\n"
 			tn.write(tsdb_command)
 			#print tsdb_command
 		feed.update(update_data)

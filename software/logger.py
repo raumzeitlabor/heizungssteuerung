@@ -13,7 +13,8 @@ import pprint
 from httplib import BadStatusLine
 
 import os, sys
-lib_path = os.path.abspath('./hausbus2')
+original_path = os.path.dirname(os.path.realpath(os.path.abspath(sys.argv[0])))
+lib_path = original_path + '/hausbus2'
 sys.path.append(lib_path)
 
 import hausbus2
@@ -22,18 +23,15 @@ import config
 
 sensor_values = {}
 
-def pachubeThread():
+def outputThread():
 	# Do stuff to send results to Pachube
 	feed = eeml.Pachube(config.API_URL, config.API_KEY, use_https=False)
 	while 1 :
-		#print sensor_values
 		update_data = []
 		hausbus2.variables["temperature"].clear
 		for key, values in sensor_values.items():
-			#print sensors[key]["pachube"] + " = " + value
 			value = round(float(sum(values)) / len(values),2)
 			update_data.append(eeml.Data(config.sensors[key]["pachube"], value, unit=eeml.Celsius()))
-			#open(config.log_dir + key,"a").write(str(int(round(time.time()))) + "\t" + str(round(value,2)) + "\n")
 			hausbus2.variables["temperature"][config.sensors[key]["hausbus"]] = value
 			tsdb_command = "temperatur "+str(time.strftime("%s"))+" "+str(value)+" sensor="+config.sensors[key]["hausbus"]+"\n"
 			print tsdb_command
@@ -41,10 +39,7 @@ def pachubeThread():
 		try:
 			feed.put()
 		except Exception, err:
-			#	Who cares?
-			#print "Couldn't send data to pachube: ", err
-			print ""
-
+			print >> sys.stderr, "Couldn't send data to pachube: ", err
 		sensor_values.clear()
 		time.sleep(30)
 
@@ -86,11 +81,10 @@ hausbus2.variables["windows"] = {}
 initWindows()
 
 try:
-	thread.start_new_thread( pachubeThread, () )
+	thread.start_new_thread( outputThread, () )
 	thread.start_new_thread( serialThread, () )
 except:
-	print ""
-	#print "Error: unable to start thread"
+	print >> sys.stderr, "Error: unable to start threads"
 
 
 hausbus2.start(80)	

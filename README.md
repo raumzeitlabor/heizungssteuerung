@@ -6,3 +6,4 @@ Weitere Infos zum Aufbau gibts im RaumZeitLabor Wiki: http://raumzeitlabor.de/wi
 ## Ordner
 * <code>firmware</code> beinhaltet die Firmware für den ATmega32 auf dem Sensor-Board
 * <code>rtlsd</code> beinhalted den RaumTemperaturLaborSensor Daemon, der die Werte von der seriellen Schnittstelle nimmt und zu Pachube schickt.
+* <code>collectors</code> Enthält eine Version, die man in einen tcollector (http://opentsdb.net/tcollector.html) einbetten kann

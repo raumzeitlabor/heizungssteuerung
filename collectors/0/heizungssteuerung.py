@@ -13,7 +13,7 @@ import pprint
 from httplib import BadStatusLine
 
 import os, sys
-lib_path = os.path.abspath('./hausbus2')
+lib_path = os.path.abspath('/root/tcollector/collectors/heizungssteuerung')
 sys.path.append(lib_path)
 
 import hausbus2
@@ -35,7 +35,7 @@ def pachubeThread():
 			update_data.append(eeml.Data(config.sensors[key]["pachube"], value, unit=eeml.Celsius()))
 			#open(config.log_dir + key,"a").write(str(int(round(time.time()))) + "\t" + str(round(value,2)) + "\n")
 			hausbus2.variables["temperature"][config.sensors[key]["hausbus"]] = value
-			tsdb_command = "temperatur "+str(time.strftime("%s"))+" "+str(value)+" sensor="+config.sensors[key]["hausbus"]+"\n"
+			tsdb_command = "temperatur "+str(time.strftime("%s"))+" "+str(value)+" sensor="+config.sensors[key]["hausbus"]
 			print tsdb_command
 		feed.update(update_data)
 		try:

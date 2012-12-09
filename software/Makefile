@@ -2,7 +2,8 @@ default:
 	g++ -Wall -pedantic -g -o log temperaturlogger.cpp -lserial
 
 deploy:
-	scp pachube.sh plot.gpl LibSerialHelper.h temperaturlogger.cpp Makefile dockstar:~/logger/
+	scp logger.py heizung:~/RaumTemperaturLaborSensor/software/
+	scp hausbus2/hausbus2.py heizung:~/RaumTemperaturLaborSensor/software/hausbus2/
 
 getlog:
 	scp -r dockstar:~/logger/logs .

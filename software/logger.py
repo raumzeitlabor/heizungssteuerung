@@ -33,7 +33,7 @@ def outputThread():
 			value = round(float(sum(values)) / len(values),2)
 			update_data.append(eeml.Data(config.sensors[key]["pachube"], value, unit=eeml.Celsius()))
 			hausbus2.variables["temperature"][config.sensors[key]["hausbus"]] = value
-			tsdb_command = "temperatur "+str(time.strftime("%s"))+" "+str(value)+" sensor="+config.sensors[key]["hausbus"]+"\n"
+			tsdb_command = "temperatur "+str(time.strftime("%s"))+" "+str(value)+" sensor="+config.sensors[key]["hausbus"]
 			print tsdb_command
 		feed.update(update_data)
 		try:

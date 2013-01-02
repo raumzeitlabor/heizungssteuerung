@@ -27,7 +27,7 @@ running = True
 def outputThread():
 	temperature = {}
 	while running :
-		temperature_old = temperature
+		temperature_old = temperature.copy()
 		temperature = {}
 		for key, values in sensor_values.items():
 			value = round(float(sum(values)) / len(values),2)
@@ -52,7 +52,7 @@ def serialThread():
 			sensor_values[match.group(1)].append(float(match.group(2)))
 		match = port_regex.search(line)
 		if (match) :
-			io_ports_old = io_ports
+			io_ports_old = io_ports.copy()
 			io_ports[match.group(1)] = match.group(2)
 			if io_ports_old != io_ports:
 				hausbus2.update_group("io_ports", io_ports, False)
@@ -67,7 +67,8 @@ def initWindows():
 				windows["state"][row_id][col_id] = "?"
 
 def updateWindows():	
-	windows_old = windows
+	global windows
+	windows_old = windows.copy()
 	for row_id, row in enumerate(config.windows):
 		for col_id, window in enumerate(row):			
 			if (window != "x" and window != "?") :
@@ -75,7 +76,7 @@ def updateWindows():
 					windows["state"][row_id][col_id] = io_ports[window[0].lower()][int(window[1])]
 				else :
 					windows["state"][row_id][col_id] = "!"
-	if windows == windows_old:
+	if windows != windows_old:
 		hausbus2.update_group("windows", windows, False)
 		hausbus2.publish("windows", retain = True)
 
@@ -99,11 +100,8 @@ except KeyboardInterrupt:
 	print '^C received, shutting down server'
 
 running = False
-hausbus2.update_group("temperature", "", False)
-hausbus2.publish("temperature", retain = True)
-hausbus2.update_group("io_ports", "", False)
-hausbus2.publish("io_ports", retain = True)
-hausbus2.update_group("windows", "", False)
-hausbus2.publish("windows", retain = True)
+hausbus2.clear_retain("temperature")
+hausbus2.clear_retain("io_ports")
+hausbus2.clear_retain("windows")
 
 hausbus2.stop()

@@ -76,9 +76,8 @@ def updateWindows():
 					windows["state"][row_id][col_id] = io_ports[window[0].lower()][int(window[1])]
 				else :
 					windows["state"][row_id][col_id] = "!"
-	if windows != windows_old:
-		hausbus2.update_group("windows", windows, False)
-		hausbus2.publish("windows", retain = True)
+	hausbus2.update_group("windows", windows, False)
+	hausbus2.publish("windows", retain = True)
 
 hausbus2.start("heizungssteuerung", http_port=80, mqtt_broker = config.mqtt_broker)
 

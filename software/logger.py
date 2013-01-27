@@ -14,10 +14,10 @@ from httplib import BadStatusLine
 
 import os, sys
 original_path = os.path.dirname(os.path.realpath(os.path.abspath(sys.argv[0])))
-lib_path = original_path + '/hausbus2'
+lib_path = original_path + '/hausbus3'
 sys.path.append(lib_path)
 
-import hausbus2
+import hausbus3
 
 import config
 
@@ -33,8 +33,8 @@ def outputThread():
 			value = round(float(sum(values)) / len(values),2)
 			temperature[config.sensors[key]["hausbus"]] = value
 		if temperature != temperature_old:
-			hausbus2.update_group("temperature", temperature, False)
-			hausbus2.publish("temperature", retain = True)
+			hausbus3.update_group("temperature", temperature, False)
+			hausbus3.publish("temperature", retain = True)
 		sensor_values.clear()
 		time.sleep(30)
 
@@ -55,8 +55,8 @@ def serialThread():
 			io_ports_old = io_ports.copy()
 			io_ports[match.group(1)] = match.group(2)
 			if io_ports_old != io_ports:
-				hausbus2.update_group("io_ports", io_ports, False)
-				hausbus2.publish("io_ports", retain = True)
+				hausbus3.update_group("io_ports", io_ports, False)
+				hausbus3.publish("io_ports", retain = True)
 				updateWindows()
 
 def initWindows():
@@ -76,10 +76,10 @@ def updateWindows():
 					windows["state"][row_id][col_id] = io_ports[window[0].lower()][int(window[1])]
 				else :
 					windows["state"][row_id][col_id] = "!"
-	hausbus2.update_group("windows", windows, False)
-	hausbus2.publish("windows", retain = True)
+	hausbus3.update_group("windows", windows, False)
+	hausbus3.publish("windows", retain = True)
 
-hausbus2.start("heizungssteuerung", http_port=80, mqtt_broker = config.mqtt_broker)
+hausbus3.start("heizungssteuerung", http_port=80, mqtt_broker = config.mqtt_broker)
 
 io_ports = {}
 windows = {}
@@ -99,8 +99,8 @@ except KeyboardInterrupt:
 	print '^C received, shutting down server'
 
 running = False
-hausbus2.clear_retain("temperature")
-hausbus2.clear_retain("io_ports")
-hausbus2.clear_retain("windows")
+hausbus3.clear_retain("temperature")
+hausbus3.clear_retain("io_ports")
+hausbus3.clear_retain("windows")
 
-hausbus2.stop()
+hausbus3.stop()

@@ -1,3 +1,3 @@
-[submodule "software/hausbus2"]
-	path = software/hausbus2
-	url = https://github.com/raumzeitlabor/hausbus2-python.git
+[submodule "software/hausbus3"]
+	path = software/hausbus3
+	url = https://github.com/raumzeitlabor/hausbus3-python.git
